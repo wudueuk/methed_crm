@@ -1,10 +1,5 @@
 'use strict';
 
-const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalDiscount = document.querySelector('.modal__input_discount');
-
 const goodsList = [
   {
     "id": 253842678,
@@ -65,9 +60,32 @@ const goodsList = [
 ];
 
 const overlay = document.querySelector('.overlay');
-
 if (overlay.classList.contains('active'))
   overlay.classList.remove('active');
+
+overlay.addEventListener('click', e => {
+  if (e.target.classList.contains('overlay'))
+    overlay.classList.remove('active');
+});
+
+const btnAddGood = document.querySelector('.panel__add-goods');
+btnAddGood.addEventListener('click', () => {
+  overlay.classList.add('active')
+});
+
+const modalClose = document.querySelector('.modal__close');
+modalClose.addEventListener('click', () => {
+  overlay.classList.remove('active');
+});
+
+const modalTitle = document.querySelector('.modal__title');
+const modalForm = document.querySelector('.modal__form');
+const modalCheckbox = document.querySelector('.modal__checkbox');
+const modalDiscount = document.querySelector('.modal__input_discount');
+
+/**
+ * Работа с таблицей товаров
+ */
 
 const goodsTableBody = document.querySelector('.table__body');
 
@@ -97,3 +115,4 @@ const renderGoods = goods => {
 };
 
 renderGoods(goodsList);
+
