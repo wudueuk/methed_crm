@@ -92,8 +92,7 @@ const createRow = good => {
 
 const renderGoods = goods => {
   goods.forEach(element => {
-    let good = createRow(element);
-    goodsTableBody.insertAdjacentHTML('beforeend', good);
+    goodsTableBody.insertAdjacentHTML('beforeend', createRow(element));
   });
 };
 
