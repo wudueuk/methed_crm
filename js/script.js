@@ -64,18 +64,14 @@ if (overlay.classList.contains('active'))
   overlay.classList.remove('active');
 
 overlay.addEventListener('click', e => {
-  if (e.target.classList.contains('overlay'))
+  const target = e.target;
+  if (target === overlay || target.closest('.modal__close'))
     overlay.classList.remove('active');
 });
 
 const btnAddGood = document.querySelector('.panel__add-goods');
 btnAddGood.addEventListener('click', () => {
   overlay.classList.add('active')
-});
-
-const modalClose = document.querySelector('.modal__close');
-modalClose.addEventListener('click', () => {
-  overlay.classList.remove('active');
 });
 
 const modalTitle = document.querySelector('.modal__title');
@@ -91,7 +87,7 @@ const goodsTableBody = document.querySelector('.table__body');
 
 const createRow = good => {
   return `
-  <tr>
+  <tr data-id="${good.id}">
     <td class="table__cell ">${good.id}</td>
     <td class="table__cell table__cell_left table__cell_name">${good.title}</td>
     <td class="table__cell table__cell_left">${good.category}</td>
@@ -115,4 +111,23 @@ const renderGoods = goods => {
 };
 
 renderGoods(goodsList);
+
+/**
+ * Работа с данными таблицы
+ */
+
+// Урок 6
+goodsTableBody.addEventListener('click', e => {
+  const target = e.target;
+
+  if (target.closest('.table__btn_del')) {
+    const parent = target.closest('tr');
+    const id = goodsList.findIndex((elem, index) => {
+      if (elem.id === Number(parent.dataset.id)) return true;
+    });
+    parent.remove();
+    goodsList.splice(id, 1);
+    console.log('goodsList: ', goodsList);
+  }
+});
 
