@@ -59,9 +59,82 @@ const goodsList = [
   }
 ];
 
+/**
+ * Инициализация основных элементов
+ */
 const overlay = document.querySelector('.overlay');
-if (overlay.classList.contains('active'))
-  overlay.classList.remove('active');
+if (overlay.classList.contains('active')) overlay.classList.remove('active');
+
+const modalForm = document.querySelector('.modal__form');
+
+const totalPrice = document.querySelector('.crm__total-price');
+
+/**
+ * Работа с таблицей товаров
+ */
+
+const goodsTableBody = document.querySelector('.table__body');
+
+const createRow = good => {
+  return `
+   <tr data-id="${good.id}">
+     <td class="table__cell ">${good.id}</td>
+     <td class="table__cell table__cell_left table__cell_name">${good.title}</td>
+     <td class="table__cell table__cell_left">${good.category}</td>
+     <td class="table__cell">${good.units}</td>
+     <td class="table__cell">${good.count}</td>
+     <td class="table__cell">$${good.price}</td>
+     <td class="table__cell">$${good.count * good.price}</td>
+     <td class="table__cell table__cell_btn-wrapper">
+       <button class="table__btn table__btn_pic"></button>
+       <button class="table__btn table__btn_edit"></button>
+       <button class="table__btn table__btn_del"></button>
+     </td>
+   </tr>
+   `;
+};
+
+const recalcTotalPrice = () => {
+  let result = goodsList.reduce((sum, elem) => {
+    return sum + (elem.price * elem.count);
+  }, 0);
+  totalPrice.textContent = `$ ${result}`;
+};
+
+const renderGoods = goods => {
+  goods.forEach(element => {
+    goodsTableBody.insertAdjacentHTML('beforeend', createRow(element));
+  });
+
+  recalcTotalPrice();
+};
+
+renderGoods(goodsList);
+
+/**
+ * Работа с данными таблицы
+ */
+
+goodsTableBody.addEventListener('click', e => {
+  const target = e.target;
+
+  // Удаление записей из таблицы
+  if (target.closest('.table__btn_del')) {
+    const parent = target.closest('tr');
+    const id = goodsList.findIndex((elem, index) => {
+      if (elem.id === Number(parent.dataset.id)) return true;
+    });
+    parent.remove();
+    goodsList.splice(id, 1);
+    recalcTotalPrice();
+    console.log('goodsList: ', goodsList);
+  }
+});
+
+/**
+ * Работа с модальным окном и формой
+ */
+const modalTitle = document.querySelector('.modal__title');
 
 overlay.addEventListener('click', e => {
   const target = e.target;
@@ -74,60 +147,65 @@ btnAddGood.addEventListener('click', () => {
   overlay.classList.add('active')
 });
 
-const modalTitle = document.querySelector('.modal__title');
-const modalForm = document.querySelector('.modal__form');
-const modalCheckbox = document.querySelector('.modal__checkbox');
-const modalDiscount = document.querySelector('.modal__input_discount');
 
 /**
- * Работа с таблицей товаров
+ * Урок 7
  */
+// Генерируем случайный ID
+const vendorId = document.querySelector('.vendor-code__id');
+vendorId.textContent = Math.floor(Math.random() * 1e9);
 
-const goodsTableBody = document.querySelector('.table__body');
-
-const createRow = good => {
-  return `
-  <tr data-id="${good.id}">
-    <td class="table__cell ">${good.id}</td>
-    <td class="table__cell table__cell_left table__cell_name">${good.title}</td>
-    <td class="table__cell table__cell_left">${good.category}</td>
-    <td class="table__cell">${good.units}</td>
-    <td class="table__cell">${good.count}</td>
-    <td class="table__cell">$${good.price}</td>
-    <td class="table__cell">$${good.count * good.price}</td>
-    <td class="table__cell table__cell_btn-wrapper">
-      <button class="table__btn table__btn_pic"></button>
-      <button class="table__btn table__btn_edit"></button>
-      <button class="table__btn table__btn_del"></button>
-    </td>
-  </tr>
-  `;
-};
-
-const renderGoods = goods => {
-  goods.forEach(element => {
-    goodsTableBody.insertAdjacentHTML('beforeend', createRow(element));
-  });
-};
-
-renderGoods(goodsList);
-
-/**
- * Работа с данными таблицы
- */
-
-// Урок 6
-goodsTableBody.addEventListener('click', e => {
+// Отслеживание изменений в элементах формы
+modalForm.addEventListener('change', e => {
   const target = e.target;
 
-  if (target.closest('.table__btn_del')) {
-    const parent = target.closest('tr');
-    const id = goodsList.findIndex((elem, index) => {
-      if (elem.id === Number(parent.dataset.id)) return true;
-    });
-    parent.remove();
-    goodsList.splice(id, 1);
-    console.log('goodsList: ', goodsList);
+  // Отслеживаем дискаунт
+  if (target === modalForm.discount) {
+    if (modalForm.discount.checked === true) {
+      modalForm.discount_count.removeAttribute('disabled');
+    } else {
+      modalForm.discount_count.setAttribute('disabled', '');
+      modalForm.discount_count.value = '';
+    }
+  }
+
+  // Автоматический рассчет и вывод итоговой стоимости
+  if (target === modalForm.count || target === modalForm.price) {
+    modalForm.total.value = '$ ' + modalForm.count.value *
+      modalForm.price.value;
   }
 });
+
+// Отправка формы
+modalForm.addEventListener('submit', e => {
+  e.preventDefault();
+  let discount = false;
+  if (modalForm.discount.checked === true) {
+    discount = modalForm.discount_count.value;
+  }
+
+  const newGood = [
+    {
+      "id": +vendorId.textContent,
+      "title": modalForm.name.value,
+      "price": modalForm.price.value,
+      "description": modalForm.description.value,
+      "category": modalForm.category.value,
+      "discont": discount,
+      "count": modalForm.count.value,
+      "units": modalForm.units.value,
+      "images": {
+        "small": '',
+        "big": modalForm.image.value,
+      }
+    }
+  ];
+
+  goodsList.push(newGood[0]);
+  renderGoods(newGood);
+
+  modalForm.reset();
+  overlay.classList.remove('active');
+});
+
 
