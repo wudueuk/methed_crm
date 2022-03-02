@@ -98,6 +98,16 @@ goodsTableBody.addEventListener('click', e => {
     goodsList.splice(id, 1);
     recalcTotalPrice(goodsList);
   }
+
+  // Отслеживаем нажатие на кнопку картинку (урок 1 модуль 3)
+  if (target.closest('.table__btn_pic')) {
+    const url = 'img/' + target.dataset.pic;
+    const top = screen.height / 2 - 300;
+    console.log('top: ', top);
+    const left = screen.width / 2 - 400;
+    console.log('left: ', left);
+    open(url, '', `width=800,height=600,top=${top},left=${left}`);
+  }
 });
 
 export default recalcTotalPrice;

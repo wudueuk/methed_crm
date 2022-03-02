@@ -12,7 +12,7 @@ export const createRow = good => {
      <td class="table__cell">$${good.price}</td>
      <td class="table__cell">$${good.count * good.price}</td>
      <td class="table__cell table__cell_btn-wrapper">
-       <button class="table__btn table__btn_pic"></button>
+       <button data-pic="800x600.jpg" class="table__btn table__btn_pic"></button>
        <button class="table__btn table__btn_edit"></button>
        <button class="table__btn table__btn_del"></button>
      </td>
