@@ -5,7 +5,9 @@ import {
   overlay,
   vendorId,
   btnAddGood,
-  goodsTableBody
+  goodsTableBody,
+  errorMessage,
+  imageContainer
 } from "./getElements.js";
 import { renderGoods } from "./render.js";
 
@@ -42,6 +44,20 @@ modalForm.addEventListener('change', e => {
   if (target === modalForm.count || target === modalForm.price) {
     modalForm.total.value = '$ ' + modalForm.count.value *
       modalForm.price.value;
+  }
+
+  // Ввод изображения
+  if (target === modalForm.image && target.files.length > 0) {
+    errorMessage.textContent = '';
+    imageContainer.textContent = '';
+    const imageFile = target.files[0];
+    if (imageFile.size > (1024 * 1024)) {
+      errorMessage.textContent = 'Изображение не должно превышать 1 МБ';
+    } else {
+      const imageGood = new Image();
+      imageGood.src = URL.createObjectURL(imageFile);
+      imageContainer.append(imageGood);
+    }
   }
 });
 
@@ -81,8 +97,12 @@ modalForm.addEventListener('submit', e => {
 // Закрытие формы
 overlay.addEventListener('click', e => {
   const target = e.target;
-  if (target === overlay || target.closest('.modal__close'))
+  if (target === overlay || target.closest('.modal__close')) {
     overlay.classList.remove('active');
+    modalForm.reset();
+    errorMessage.textContent = '';
+    imageContainer.textContent = '';
+  }
 });
 
 // Удаление записей из таблицы

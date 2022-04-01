@@ -18,6 +18,24 @@ const vendorId = document.querySelector('.vendor-code__id');
 
 const btnAddGood = document.querySelector('.panel__add-goods');
 
+const errorMessageBox = document.createElement('div');
+errorMessageBox.style.gridArea = '.';
+
+const errorMessage = document.createElement('span');
+errorMessage.style.cssText = `
+  color: red;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+`;
+
+const imageContainer = document.createElement('div');
+imageContainer.className = 'image__container';
+
+errorMessageBox.append(errorMessage);
+document.querySelector('.modal__fieldset')
+  .append(errorMessageBox, imageContainer);
+
 export {
   overlay,
   modalForm,
@@ -25,5 +43,7 @@ export {
   goodsTableBody,
   modalTitle,
   btnAddGood,
-  vendorId
+  vendorId,
+  errorMessage,
+  imageContainer
 };
