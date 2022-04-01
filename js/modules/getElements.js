@@ -23,10 +23,12 @@ errorMessageBox.style.gridArea = '.';
 
 const errorMessage = document.createElement('span');
 errorMessage.style.cssText = `
+  display: block;
   color: red;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
+  text-align: center;
 `;
 
 const imageContainer = document.createElement('div');

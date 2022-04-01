@@ -51,13 +51,18 @@ modalForm.addEventListener('change', e => {
     errorMessage.textContent = '';
     imageContainer.textContent = '';
     const imageFile = target.files[0];
-    if (imageFile.size > (1024 * 1024)) {
-      errorMessage.textContent = 'Изображение не должно превышать 1 МБ';
+    if (imageFile.name.match(/\.(jpg|jpeg|png|svg|gif)$/i)) {
+      if (imageFile.size > (1024 * 1024)) {
+        errorMessage.textContent = 'Изображение не должно превышать размер 1 МБ';
+      } else {
+        const imageGood = new Image();
+        imageGood.src = URL.createObjectURL(imageFile);
+        imageContainer.append(imageGood);
+      }
     } else {
-      const imageGood = new Image();
-      imageGood.src = URL.createObjectURL(imageFile);
-      imageContainer.append(imageGood);
+      errorMessage.textContent = 'Выберите файл изображения';
     }
+
   }
 });
 
